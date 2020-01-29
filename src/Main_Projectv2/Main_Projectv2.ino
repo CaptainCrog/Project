@@ -1,19 +1,20 @@
+// The MQTT callback function for commands and configuration updates
+void messageReceived(String &topic, String &payload) {
+  Serial.println("incoming: " + topic + " - " + payload);
+}
 #include <NewPing.h>
 #include <TinyGPS++.h>
 #include "wiring_private.h"
-#include <jwt.h>
-#include <MQTT.h>
-#include <MQTTClient.h>
+#include "universal-mqtt.h"
 
-#define TRIG_PIN 7
-#define ECHO_PIN 6
-#define MAX_DISTANCE 100
+#define TRIG_PIN 7 //Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define ECHO_PIN 6 //Arduino pin tied to echo pin on the ultrasonic sensor.
+#define MAX_DISTANCE 500 //Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 #define GPS_TXD_PIN 1
 #define GPS_RXD_PIN 0
 
 NewPing sr04(TRIG_PIN, ECHO_PIN, MAX_DISTANCE);
 Uart gpsSerial (&sercom3, GPS_RXD_PIN, GPS_TXD_PIN, SERCOM_RX_PAD_1, UART_TX_PAD_0); // Create the new UART instance assigning it to pin 0 and 1
-//SoftwareSerial gpsSerial(GPS_TXD_PIN,GPS_RXD_PIN);
 TinyGPSPlus gps;
 
 //Car attributes
@@ -41,7 +42,8 @@ void setup()
 void loop()
 {
   mqttClient->loop();
-  if (!mqttclient->connected())
+  delay(10);
+  if (!mqttClient->connected())
   {
     connect();
   }
@@ -55,7 +57,6 @@ void loop()
     Serial.println(crashLat, 6);
     Serial.println(crashLng, 6);
     String payload = 
-      String("{\"timestamp\":") + time(nullptr) +
       String(",\"lattitude co-ordinates\":") + crashLat +
       String(",\"longitude co-ordinates\":") + crashLng +
       String(",\"car name\":") + carName + 
@@ -64,24 +65,27 @@ void loop()
       String(",\"owner's address\":") + ownerAddress + 
       String("}");
     publishTelemetry(payload);
+    delay(10000);
   }
   delay(50);
 }
 
 void GetGPS()
 {
+  //Serial.println("In GetGPS Function");
   while (gpsSerial.available())
   {
+    //Serial.println("In GetGPS while loop");
     float data = gpsSerial.read();
     if (gps.encode(data))
     {
       lattitude = (gps.location.lat());
       longitude = (gps.location.lng());
-      //Serial.print ("lattitude: ");
-      //Serial.println (lattitude,6);
-      //Serial.print ("longitude: ");
-      //Serial.println (longitude,6);
-      //Serial.println("");
+      Serial.print ("lattitude: ");
+      Serial.println (lattitude,6);
+      Serial.print ("longitude: ");
+      Serial.println (longitude,6);
+      Serial.println("");
     }
   }
 }
@@ -89,6 +93,10 @@ void GetGPS()
 void GetDist()
 {
    distance=sr04.ping_cm();
+   if (distance >= MAX_DISTANCE)
+   {
+    distance = 500;
+   }
    Serial.print(distance);
    Serial.println("cm");
 }
