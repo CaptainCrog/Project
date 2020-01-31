@@ -22,6 +22,7 @@ String carName = "IoT Car";
 String licensePlate = "10T C4R";
 String carOwner = "Craig Penning";
 String ownerAddress = "29 Made-up Road";
+String nl = "/n"
 
 //global variables
 float lattitude,longitude;
@@ -56,14 +57,16 @@ void loop()
     crashLng = longitude;
     Serial.println(crashLat, 6);
     Serial.println(crashLng, 6);
-    String payload = 
-      String(",\"lattitude co-ordinates\":") + crashLat +
-      String(",\"longitude co-ordinates\":") + crashLng +
-      String(",\"car name\":") + carName + 
-      String(",\"license plate\":") + licensePlate + 
-      String(",\"car owner\":") + carOwner + 
-      String(",\"owner's address\":") + ownerAddress + 
+    String payload =
+      String("{") 
+      String(",\"lattitude co-ordinates\":") + crashLat + nl +
+      String(",\"longitude co-ordinates\":") + crashLng + nl +
+      String(",\"car name\":") + carName + nl +
+      String(",\"license plate\":") + licensePlate + nl +
+      String(",\"car owner\":") + carOwner + nl +
+      String(",\"owner's address\":") + ownerAddress + nl +
       String("}");
+      nl
     publishTelemetry(payload);
     delay(10000);
   }
