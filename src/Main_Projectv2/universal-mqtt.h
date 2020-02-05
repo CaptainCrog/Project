@@ -1,4 +1,5 @@
 #include <WiFiNINA.h>
+#include <LiquidCrystal.h>
 #include <WiFiSSLClient.h>
 #include <MQTT.h>
 #include <CloudIoTCore.h>
@@ -11,6 +12,7 @@ Client *netClient;
 CloudIoTCoreDevice *device;
 CloudIoTCoreMqtt *mqtt;
 MQTTClient *mqttClient;
+LiquidCrystal lcd(8,9,2,3,4,5);
 unsigned long iss = 0;
 String jwt;
 
@@ -46,7 +48,7 @@ void setupWifi() {
 
 void connectWifi() {
 	Serial.print("checking wifi...");
-	while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {
 		Serial.print(".");
 		delay(1000);
 	}

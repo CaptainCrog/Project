@@ -4,6 +4,8 @@ void messageReceived(String &topic, String &payload) {
 }
 #include <NewPing.h>
 #include <TinyGPS++.h>
+#include <avr/dtostrf.h>
+#include <LiquidCrystal.h>
 #include "wiring_private.h"
 #include "universal-mqtt.h"
 
@@ -22,22 +24,29 @@ String carName = "IoT Car";
 String licensePlate = "10T C4R";
 String carOwner = "Craig Penning";
 String ownerAddress = "29 Made-up Road";
-String nl = "/n"
 
 //global variables
-float lattitude,longitude;
+char Lat[10];
+char Long[10];
+float latitude,longitude;
 float crashLat, crashLng;
 float duration, distance;
+String nl = ("/n");
 void setup() 
 {
 
  gpsSerial.begin(9600);
  Serial.begin(9600);
+ lcd.begin(16,2);
 
  pinPeripheral(GPS_RXD_PIN, PIO_SERCOM); //Assign RX function to pin 0
  pinPeripheral(GPS_TXD_PIN, PIO_SERCOM); //Assign TX function to pin 1
-
+ lcd.print("WiFi Connected?");
  setupCloudIoT();
+ lcd.setCursor(0,1);
+ lcd.print("Yes");
+ delay(5000);
+ lcd.clear();
 }
 
 void loop()
@@ -53,23 +62,34 @@ void loop()
   if (distance <= 5)
   {
     Serial.println("CRASH");
-    crashLat = lattitude;
+    lcd.print("CRASH");
+    delay(1000);
+    lcd.clear();
+    crashLat = latitude;
     crashLng = longitude;
-    Serial.println(crashLat, 6);
-    Serial.println(crashLng, 6);
-    String payload =
-      String("{") 
-      String(",\"lattitude co-ordinates\":") + crashLat + nl +
-      String(",\"longitude co-ordinates\":") + crashLng + nl +
-      String(",\"car name\":") + carName + nl +
+    //Serial.println(crashLat, 6);
+    //Serial.println(crashLng, 6);
+    dtostrf(crashLat,6,6,Lat);
+    dtostrf(crashLng,6,6,Long);
+    Serial.println(Lat);
+    Serial.println(Long);
+    lcd.setCursor(0,0);
+    lcd.print(Lat);
+    lcd.setCursor(0,1);
+    lcd.print(Long);
+    String payload = 
+      String("{");
+      String(",\"latitude co-ordinates\":") + Lat + nl +
+      String(",\"longitude co-ordinates\":") + Long + nl +
+      String(",\"car name\":") + carName + 
       String(",\"license plate\":") + licensePlate + nl +
-      String(",\"car owner\":") + carOwner + nl +
+      String(",\"car owner\":") + carOwner + 
       String(",\"owner's address\":") + ownerAddress + nl +
-      String("}");
-      nl
+      String("}") + nl + nl;
     publishTelemetry(payload);
     delay(10000);
   }
+  lcd.clear();
   delay(50);
 }
 
@@ -82,10 +102,10 @@ void GetGPS()
     float data = gpsSerial.read();
     if (gps.encode(data))
     {
-      lattitude = (gps.location.lat());
+      latitude = (gps.location.lat());
       longitude = (gps.location.lng());
-      Serial.print ("lattitude: ");
-      Serial.println (lattitude,6);
+      Serial.print ("latitude: ");
+      Serial.println (latitude,6);
       Serial.print ("longitude: ");
       Serial.println (longitude,6);
       Serial.println("");
