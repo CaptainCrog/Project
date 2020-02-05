@@ -66,8 +66,8 @@ void loop()
     connect();
   }
   // Get Distance and GPS data
-  GetDist();
-  GetGPS();
+  getDist();
+  getGPS();
   // If the distance between an object and the sensore is less than the set distance, a crash is recorded and a payload of data is published to the IoT Core on Google Cloud
   if (distance <= 5)
   {
@@ -100,7 +100,7 @@ void loop()
 }
 
 // Function that gets the GPS co-ordinates
-void GetGPS()
+void getGPS()
 {
   //Serial.println("In GetGPS Function");
   while (gpsSerial.available())
@@ -122,7 +122,7 @@ void GetGPS()
 }
 
 // Function that retrieves the distance data from the Ultrasonic Sensor
-void GetDist()
+void getDist()
 {
    // Ping the sensor and store the distance,if distance is over the maximum then it sets the distance as a flat value (without this it stores 0 which would imply a crash has occured). 
    distance=sr04.ping_cm();
