@@ -1,8 +1,5 @@
+// Code for the WiFi/IoT Core implementation can be found at https://github.com/Nilhcem/esp32-cloud-iot-core-k8s
 // This file contains your configuration used to connect to Cloud IoT Core
-
-// Important!
-// TODO(you): Install root certificate to verify tls connection as described
-// in https://www.hackster.io/arichetta/add-ssl-certificates-to-mkr1000-93c89d
 
 // Wifi network details.
 const char *ssid = "VM9820918";

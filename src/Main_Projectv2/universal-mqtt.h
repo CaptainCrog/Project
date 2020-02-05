@@ -1,5 +1,6 @@
+// Code for the WiFi/IoT Core implementation can be found at https://github.com/Nilhcem/esp32-cloud-iot-core-k8s
+
 #include <WiFiNINA.h>
-#include <LiquidCrystal.h>
 #include <WiFiSSLClient.h>
 #include <MQTT.h>
 #include <CloudIoTCore.h>
@@ -12,7 +13,6 @@ Client *netClient;
 CloudIoTCoreDevice *device;
 CloudIoTCoreMqtt *mqtt;
 MQTTClient *mqttClient;
-LiquidCrystal lcd(8,9,2,3,4,5);
 unsigned long iss = 0;
 String jwt;
 
