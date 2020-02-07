@@ -2,8 +2,8 @@
 // This file contains your configuration used to connect to Cloud IoT Core
 
 // Wifi network details.
-const char *ssid = "Insert WiFi Name";
-const char *password = "Insert WiFi Password";
+const char *ssid = "IoTCarProject";
+const char *password = "Vbdfcbfybfvd2";
 
 // Cloud IoT details.
 const char *project_id = "pen14541450-uolproject-266014";
