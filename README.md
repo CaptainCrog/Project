@@ -1,2 +1,3 @@
 # Project
-Dissertation Project: Internet-of-Things Accident Detection System using Arduino
+Dissertation Project: Connected Car as a Platform for Accident Detection and Response
+
