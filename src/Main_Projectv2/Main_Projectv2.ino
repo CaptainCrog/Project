@@ -5,7 +5,6 @@ void messageReceived(String &topic, String &payload) {
 // Libraries used for the project (NOTE: Libraries dedicated to connecting the device to the cloud/wifi can be found in the universal-mqtt.h file
 #include <NewPing.h>                        // Ultrasonic Sencor
 #include <TinyGPS++.h>                      // GPS Tracker
-#include <avr/dtostrf.h>                    // Allows for conversion of floats to char arrays
 #include <LiquidCrystal.h>                  // LCD Screen
 #include "wiring_private.h"
 #include "universal-mqtt.h"                 // IoT Core/WiFi file
@@ -133,6 +132,13 @@ void getDist()
    // Print data to the Serial Monitor
    Serial.print(distance);
    Serial.println("cm");
+}
+// Function converts float to string as a char array
+char *dtostrf (float val, signed char width, unsigned char prec, char *sout) {
+  char fmt[20];
+  sprintf(fmt, "%%%d.%df", width, prec);
+  sprintf(sout, fmt, val);
+  return sout;
 }
 
 //Function for handling the serial communication port that has been manually assigned
